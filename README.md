@@ -1,28 +1,64 @@
 # CodeBreaker
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/code_breaker`. To experiment with that code, run `bin/console` for an interactive prompt.
+CodeBreaker breaks a line of Ruby code into its receiver classes and the methods
+that are called on them.
 
-TODO: Delete this and the text above, and describe your gem
+The idea behind this is to make global lines of code like the following one testable:
+
+```ruby
+sum = Rational(2, 3) + 4
+```
+
+By breaking down this line into the receiver classes and called methods you can
+check e.g. whether a code snippet assigns the sum of a Rational and a Fixnum to
+a variable with the name `sum`.
+
+Testing global code snippets might be important for testing the code of simple
+programming tasks in learning tools like [Daigaku](https://github.com/daigaku-ruby/daigaku).
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'code_breaker'
+gem 'code_breaker', github: 'daigaku-ruby/code_breaker'
 ```
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
+Or download and install it yourself as:
 
-    $ gem install code_breaker
+    $ git clone git@github.com:daigaku-ruby/code_breaker.git
+    $ cd code_breaker
+    $ rake install
 
 ## Usage
 
-TODO: Write usage instructions here
+You can break a Ruby code snippet into its receivers and called method:
+
+```ruby
+require 'code_breaker'
+
+code_snippet = 'crazy_number = Rational(3, 5) + 42 - Complex(2.3, 6.4) * 1.2'
+CodeBreaker.parse(code_snippet)
+# => [Rational, :+, Fixnum, :-, Complex, :*, Float]
+```
+
+You can also use the Parser class directly:
+
+```ruby
+parser = CodeBreaker::Parser.new(code_snippet)
+parser.run
+# => [Rational, :+, Fixnum, :-, Complex, :*, Float]
+
+parser.input
+# => 'crazy_number = Rational(3, 5) + 42 - Complex(2.3, 6.4) * 1.2'
+
+parser.output
+# => [Rational, :+, Fixnum, :-, Complex, :*, Float]
+```
 
 ## Development
 
