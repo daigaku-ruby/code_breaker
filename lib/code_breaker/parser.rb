@@ -19,10 +19,29 @@ module CodeBreaker
     private
 
     def parse(input)
-      parsed_ast = ::Parser::CurrentRuby.parse(input)
-      nodes = parsed_ast.loc.node.children[1].children
+      ast = ::Parser::CurrentRuby.parse(input)
+
+      if variable_assignment?(ast)
+        parse_variable_assignment(ast)
+      else
+        parse_statement(ast)
+      end
+    end
+
+    def variable_assignment?(ast)
+      ast.loc.node.type == :lvasgn
+    end
+
+    def parse_variable_assignment(ast)
+      nodes = ast.loc.node.children[1].children
       result = parse_nodes(nodes)
-      cleanup(result)
+      cleanup(result).flatten(1).unshift(ast.loc.node.children[0], :'=')
+    end
+
+    def parse_statement(ast)
+      nodes = ast.loc.node.children
+      result = parse_nodes(nodes)
+      cleanup(result).flatten(1)
     end
 
     def parse_nodes(nodes)
@@ -32,17 +51,21 @@ module CodeBreaker
     end
 
     def cleanup(nodes)
-      result = nodes.map do |node|
+      nodes.map do |node|
         if node.kind_of?(Symbol)
           node
-        elsif node.kind_of?(Array) && node.length == 1
-          node[0].class
         elsif node.kind_of?(Array)
-          node[0].nil? ? node[1].to_s.constantize : cleanup(node)
+          if node.length > 1
+            node[0].nil? ? node[1].to_s.constantize : cleanup(node)
+          elsif node[0].kind_of?(Array)
+            cleanup(node)
+          else
+            node[0].class
+          end
+        else
+          node.class
         end
       end
-
-      result.flatten
     end
   end
 end
