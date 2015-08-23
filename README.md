@@ -43,21 +43,27 @@ require 'code_breaker'
 
 code_snippet = 'crazy_number = Rational(3, 5) + 42 - Complex(2.3, 6.4) * 1.2'
 CodeBreaker.parse(code_snippet)
-# => [Rational, :+, Fixnum, :-, Complex, :*, Float]
+# => [:crazy_number, :'=', Rational, :+, Fixnum, :-, Complex, :*, Float]
+
+code_snippet = '"hello" + "World"'
+CodeBreaker.parse(code_snippet)
+# => [String, :+, String]
 ```
 
 You can also use the Parser class directly:
 
 ```ruby
+code_snippet = '"hello" + "World"'
+
 parser = CodeBreaker::Parser.new(code_snippet)
 parser.run
-# => [Rational, :+, Fixnum, :-, Complex, :*, Float]
-
-parser.input
-# => 'crazy_number = Rational(3, 5) + 42 - Complex(2.3, 6.4) * 1.2'
+# => [String, :+, String]
 
 parser.output
-# => [Rational, :+, Fixnum, :-, Complex, :*, Float]
+# => [String, :+, String]
+
+parser.input
+# => "\"hello\"+\"world\""
 ```
 
 ## Development
