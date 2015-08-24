@@ -24,43 +24,58 @@ describe CodeBreaker::Parser do
   end
 
   describe '#run' do
-    it 'returns an Array' do
-      expect(subject.run).to be_an Array
-    end
+    context 'for root node representing a basic type' do
+      {
+        "nil"       => NilClass,
+        "true"      => TrueClass,
+        "false"     => FalseClass,
+        "'string'"  => String,
+        ":symbol"   => Symbol,
+        "3.5"       => Float,
+        "1"         => Fixnum,
+        "4_611_686_018_427_387_904" => Bignum
 
-    context 'for code snippets defining a variable' do
-      it 'returns the called classes and methods of the right hand side' do
-        code_snippet = 'number = 1 + 2.3 - Rational(2,3) * Complex(0.4, 0.2)'
-        expected_result = [:number, :'=', Fixnum, :+, Float, :-, Rational, :*, Complex]
-
-        actual_result = CodeBreaker::Parser.new(code_snippet).run
-        expect(actual_result).to eq expected_result
+      }.each do |input, output|
+        it "returns #{output} for #{input}" do
+          parsed = CodeBreaker::Parser.new("#{input}").run
+          expect(parsed).to eq output
+        end
       end
 
-      it 'returns a single item Array for only one statement' do
-        code_snippet = '"3.14159265359"'
-        expected_result = [String]
-
-        actual_result = CodeBreaker::Parser.new(code_snippet).run
-        expect(actual_result).to eq expected_result
+      context 'for root node representing a constant' do
+        it 'returns the constant hash with the constant symbol' do
+          parsed = CodeBreaker::Parser.new("Object").run
+          expect(parsed).to eq({ const: :Object })
+        end
       end
 
-      it 'returns a nested Array for nested statements' do
-        code_snippet = 'number = 1.2 * (Rational(2) - 1)'
-        expected_result = [:number, :'=', Float, :*, [Rational, :-, Fixnum]]
-
-        actual_result = CodeBreaker::Parser.new(code_snippet).run
-        expect(actual_result).to eq expected_result
+      context 'for root node respresenting a send type' do
+        [Rational, Complex].each do |number|
+          it "returns #{number} for a #{number.to_s.downcase} number" do
+            parsed = CodeBreaker::Parser.new("#{number}(2, 3)").run
+            expect(parsed).to eq number
+          end
+        end
       end
-    end
 
-    context 'for code snippets not assigning a variable' do
-      it 'returns the called classes and methods' do
-        code_snippet = '1.2 * (Rational(2) - 1)'
-        expected_result = [Float, :*, [Rational, :-, Fixnum]]
+      context 'for a simple method call on Objects' do
+        it 'returns an Array with the classes and methods' do
+          input = "1 + 3.5 * Rational(2,3) - Complex(1, 2)"
+          output = [Fixnum, :+, Float, :*, Rational, :-, Complex]
 
-        actual_result = CodeBreaker::Parser.new(code_snippet).run
-        expect(actual_result).to eq expected_result
+          parsed = CodeBreaker::Parser.new(input).run
+          expect(parsed).to eq output
+        end
+      end
+
+      context 'for a simple method call on Objects with braces' do
+        it 'returns a nested Array with the classes and methods' do
+          input = "((1 + 3.5) - Rational(2,3)) * Complex(1, 2)"
+          output = [[[Fixnum, :+, Float], :-, Rational], :*, Complex]
+
+          parsed = CodeBreaker::Parser.new(input).run
+          expect(parsed).to eq output
+        end
       end
     end
   end

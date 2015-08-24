@@ -11,60 +11,76 @@ module CodeBreaker
     end
 
     def run
-      @output ||= parse(@input)
+      unless @output
+        ast = ::Parser::CurrentRuby.parse(input)
+        @output = parse(ast.loc.node)
+      end
+
+      @output
     end
 
     alias :output :run
 
     private
 
-    def parse(input)
-      ast = ::Parser::CurrentRuby.parse(input)
-
-      if variable_assignment?(ast)
-        parse_variable_assignment(ast)
+    def parse(node)
+      if node.kind_of?(Symbol)
+        node
       else
-        parse_statement(ast)
+        send("parse_#{node.type}_node", node)
       end
     end
 
-    def variable_assignment?(ast)
-      ast.loc.node.type == :lvasgn
+    def parse_nil_node(node)
+      NilClass
     end
 
-    def parse_variable_assignment(ast)
-      nodes = ast.loc.node.children[1].children
-      result = parse_nodes(nodes)
-      cleanup(result).flatten(1).unshift(ast.loc.node.children[0], :'=')
+    def parse_true_node(node)
+      TrueClass
     end
 
-    def parse_statement(ast)
-      nodes = ast.loc.node.children
-      result = parse_nodes(nodes)
-      cleanup(result).flatten(1)
+    def parse_false_node(node)
+      FalseClass
     end
 
-    def parse_nodes(nodes)
-      nodes.map do |node|
-        node.respond_to?(:children) ? parse_nodes(node.children).to_a : node
+    def parse_str_node(node)
+      String
+    end
+
+    def parse_sym_node(node)
+      Symbol
+    end
+
+    def parse_float_node(node)
+      Float
+    end
+
+    def parse_int_node(node)
+      value = node.children[0]
+      value.class
+    end
+
+    def parse_const_node(node)
+      { node.type => node.children.last }
+    end
+
+    def parse_send_node(node)
+      children = node.children
+
+      if [:Rational, :Complex].include?(children[1])
+        return children[1].to_s.constantize
       end
+
+      result = children.reduce([]) do |res, child|
+        res << parse(child)
+      end
+
+      result.flatten(1)
     end
 
-    def cleanup(nodes)
-      nodes.map do |node|
-        if node.kind_of?(Symbol)
-          node
-        elsif node.kind_of?(Array)
-          if node.length > 1
-            node[0].nil? ? node[1].to_s.constantize : cleanup(node)
-          elsif node[0].kind_of?(Array)
-            cleanup(node)
-          else
-            node[0].class
-          end
-        else
-          node.class
-        end
+    def parse_begin_node(node)
+      node.children.reduce([]) do |res, child|
+        res << parse(child)
       end
     end
   end
