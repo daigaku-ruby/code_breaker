@@ -81,8 +81,39 @@ module CodeBreaker
       parse_children(node)
     end
 
+    # local variable assignment
     def parse_lvasgn_node(node)
       { node.type => parse_children(node) }
+    end
+
+    # multiple assignment
+    def parse_masgn_node(node)
+      lhs, rhs = parse_children(node)
+
+      values = if rhs.kind_of?(Hash) && rhs.has_key?(:array)
+        rhs[:array]
+      else
+        [rhs] + (1...lhs.count).map { NilClass }
+      end
+
+      { node.type => { lhs => values } }
+    end
+
+    # multiple left hand side
+    def parse_mlhs_node(node)
+      parse_children(node).map { |var| var.values }.flatten
+    end
+
+    def parse_array_node(node)
+      { node.type => parse_children(node) }
+    end
+
+    def parse_hash_node(node)
+      { node.type => parse_children(node).inject(:merge).to_h }
+    end
+
+    def parse_pair_node(node)
+      { parse(node.children[0]) => parse(node.children[1]) }
     end
   end
 end

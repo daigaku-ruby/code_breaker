@@ -34,7 +34,6 @@ describe CodeBreaker::Parser do
         "3.5"       => Float,
         "1"         => Fixnum,
         "4_611_686_018_427_387_904" => Bignum
-
       }.each do |input, output|
         it "returns #{output} for #{input}" do
           parsed = CodeBreaker::Parser.new("#{input}").run
@@ -82,6 +81,52 @@ describe CodeBreaker::Parser do
         it 'returns a Hash with key :lvasgn (local variable assignment)' do
           input = "name = 'John Doe' + 24.to_s"
           output = { lvasgn: [:name, [String, :+, Fixnum, :to_s]] }
+
+          parsed = CodeBreaker::Parser.new(input).run
+          expect(parsed).to eq output
+        end
+      end
+
+      context 'for a multiple variable assignment' do
+        it 'returns an assignment hash if RHS is an Array' do
+          input = "x, y = ['holy', 108]"
+          output = { masgn: { [:x, :y] => [String, Fixnum] } }
+
+          parsed = CodeBreaker::Parser.new(input).run
+          expect(parsed).to eq output
+        end
+
+        it 'returns an assignment hash if RHS is a variable list' do
+          input = "x, y = 'holy', 108"
+          output = { masgn: { [:x, :y] => [String, Fixnum] } }
+
+          parsed = CodeBreaker::Parser.new(input).run
+          expect(parsed).to eq output
+        end
+
+        it 'returns an assignment hash if RHS is a single variable' do
+          input = "x, y = 'single'"
+          output = { masgn: { [:x, :y] => [String, NilClass] } }
+
+          parsed = CodeBreaker::Parser.new(input).run
+          expect(parsed).to eq output
+        end
+      end
+
+      context 'for a root node representing an Array' do
+        it 'returns a Hash with key :array and an Array of items' do
+          input = "[1, 'apple', :a, Day]"
+          output = { array: [Fixnum, String, Symbol, { const: :Day }] }
+
+          parsed = CodeBreaker::Parser.new(input).run
+          expect(parsed).to eq output
+        end
+      end
+
+      context 'for a root node representing a Hash' do
+        it 'returns a Hash with key :hash and a Hash of key/type pairs' do
+          input = "{ euro: '€', 'dollar' => 1.1521 }"
+          output = { hash: { Symbol => String, String => Float } }
 
           parsed = CodeBreaker::Parser.new(input).run
           expect(parsed).to eq output
