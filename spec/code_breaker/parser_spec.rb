@@ -66,12 +66,22 @@ describe CodeBreaker::Parser do
           parsed = CodeBreaker::Parser.new(input).run
           expect(parsed).to eq output
         end
+
+        describe 'with braces' do
+          it 'returns a nested Array with the classes and methods' do
+            input = "((1 + 3.5) - Rational(2,3)) * Complex(1, 2)"
+            output = [[[Fixnum, :+, Float], :-, Rational], :*, Complex]
+
+            parsed = CodeBreaker::Parser.new(input).run
+            expect(parsed).to eq output
+          end
+        end
       end
 
-      context 'for a simple method call on Objects with braces' do
-        it 'returns a nested Array with the classes and methods' do
-          input = "((1 + 3.5) - Rational(2,3)) * Complex(1, 2)"
-          output = [[[Fixnum, :+, Float], :-, Rational], :*, Complex]
+      context 'for a local variable assignment' do
+        it 'returns a Hash with key :lvasgn (local variable assignment)' do
+          input = "name = 'John Doe' + 24.to_s"
+          output = { lvasgn: [:name, [String, :+, Fixnum, :to_s]] }
 
           parsed = CodeBreaker::Parser.new(input).run
           expect(parsed).to eq output

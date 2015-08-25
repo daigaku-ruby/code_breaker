@@ -31,6 +31,12 @@ module CodeBreaker
       end
     end
 
+    def parse_children(node)
+      node.children.reduce([]) do |res, child|
+        res << parse(child)
+      end
+    end
+
     def parse_nil_node(node)
       NilClass
     end
@@ -56,8 +62,7 @@ module CodeBreaker
     end
 
     def parse_int_node(node)
-      value = node.children[0]
-      value.class
+      node.children[0].class
     end
 
     def parse_const_node(node)
@@ -65,23 +70,19 @@ module CodeBreaker
     end
 
     def parse_send_node(node)
-      children = node.children
-
-      if [:Rational, :Complex].include?(children[1])
-        return children[1].to_s.constantize
+      if [:Rational, :Complex].include?(node.children[1])
+        return node.children[1].to_s.constantize
       end
 
-      result = children.reduce([]) do |res, child|
-        res << parse(child)
-      end
-
-      result.flatten(1)
+      parse_children(node).flatten(1)
     end
 
     def parse_begin_node(node)
-      node.children.reduce([]) do |res, child|
-        res << parse(child)
-      end
+      parse_children(node)
+    end
+
+    def parse_lvasgn_node(node)
+      { node.type => parse_children(node) }
     end
   end
 end
