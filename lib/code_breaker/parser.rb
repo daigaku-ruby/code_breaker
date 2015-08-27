@@ -115,5 +115,15 @@ module CodeBreaker
     def parse_pair_node(node)
       { parse(node.children[0]) => parse(node.children[1]) }
     end
+
+    # inclusive range a..b
+    def parse_irange_node(node)
+      { node.type => parse_children(node) }
+    end
+
+    # exclusive range a...b
+    def parse_erange_node(node)
+      { node.type => parse_children(node) }
+    end
   end
 end
