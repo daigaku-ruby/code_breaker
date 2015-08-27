@@ -37,6 +37,16 @@ module CodeBreaker
       end
     end
 
+    def parse_as_hash(node)
+      { node.type => parse_children(node) }
+    end
+
+    alias :parse_begin_node   :parse_children
+    alias :parse_array_node   :parse_as_hash
+    alias :parse_lvasgn_node  :parse_as_hash  # local variable assignment
+    alias :parse_irange_node  :parse_as_hash  # inclusive range a..b
+    alias :parse_erange_node  :parse_as_hash  # exclusive range a..b
+
     def parse_nil_node(node)
       NilClass
     end
@@ -77,15 +87,6 @@ module CodeBreaker
       parse_children(node).flatten(1)
     end
 
-    def parse_begin_node(node)
-      parse_children(node)
-    end
-
-    # local variable assignment
-    def parse_lvasgn_node(node)
-      { node.type => parse_children(node) }
-    end
-
     # multiple assignment
     def parse_masgn_node(node)
       lhs, rhs = parse_children(node)
@@ -104,26 +105,12 @@ module CodeBreaker
       parse_children(node).map { |var| var.values }.flatten
     end
 
-    def parse_array_node(node)
-      { node.type => parse_children(node) }
-    end
-
     def parse_hash_node(node)
       { node.type => parse_children(node).inject(:merge).to_h }
     end
 
     def parse_pair_node(node)
       { parse(node.children[0]) => parse(node.children[1]) }
-    end
-
-    # inclusive range a..b
-    def parse_irange_node(node)
-      { node.type => parse_children(node) }
-    end
-
-    # exclusive range a...b
-    def parse_erange_node(node)
-      { node.type => parse_children(node) }
     end
   end
 end
