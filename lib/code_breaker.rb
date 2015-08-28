@@ -1,5 +1,5 @@
-require "code_breaker/version"
-require "code_breaker/parser"
+require 'code_breaker/version'
+require 'code_breaker/parser'
 
 module CodeBreaker
 
