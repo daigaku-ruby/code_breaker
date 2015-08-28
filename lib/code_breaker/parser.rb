@@ -44,6 +44,9 @@ module CodeBreaker
     alias :parse_begin_node   :parse_children
     alias :parse_array_node   :parse_as_hash
     alias :parse_lvasgn_node  :parse_as_hash  # local variable assignment
+    alias :parse_ivasgn_node  :parse_as_hash  # instance variable assignment
+    alias :parse_cvasgn_node  :parse_as_hash  # class variable assignment
+    alias :parse_gvasgn_node  :parse_as_hash  # global variable assignment
     alias :parse_irange_node  :parse_as_hash  # inclusive range a..b
     alias :parse_erange_node  :parse_as_hash  # exclusive range a..b
 
