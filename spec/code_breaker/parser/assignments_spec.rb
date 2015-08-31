@@ -69,5 +69,35 @@ describe CodeBreaker::Parser do
       end
     end
 
+    context 'for an operation assignment' do
+      it 'returns a Hash with key :op_asgn' do
+        input = "a += 1"
+        output = { op_asgn: [{ lvasgn: [:a] }, :+, Fixnum] }
+
+        parsed = CodeBreaker::Parser.new(input).run
+        expect(parsed).to eq output
+      end
+    end
+
+    context 'for an or assignment' do
+      it 'returns a Hash with key :or_asgn' do
+        input = "a ||= true"
+        output = { or_asgn: [{ lvasgn: [:a] }, TrueClass] }
+
+        parsed = CodeBreaker::Parser.new(input).run
+        expect(parsed).to eq output
+      end
+    end
+
+    context 'for an and assignment' do
+      it 'returns a Hash with key :and_asgn' do
+        input = "a &&= true"
+        output = { and_asgn: [{ lvasgn: [:a] }, TrueClass] }
+
+        parsed = CodeBreaker::Parser.new(input).run
+        expect(parsed).to eq output
+      end
+    end
+
   end
 end

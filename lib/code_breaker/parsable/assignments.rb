@@ -12,6 +12,9 @@ module CodeBreaker
         alias :parse_ivasgn_node :parse_as_hash # instance variable assignment
         alias :parse_cvasgn_node :parse_as_hash # class variable assignment
         alias :parse_gvasgn_node :parse_as_hash # global variable assignment
+        alias :parse_op_asgn_node :parse_as_hash # operation assignment
+        alias :parse_or_asgn_node :parse_as_hash # or assignment
+        alias :parse_and_asgn_node :parse_as_hash # and assignment
 
         # multiple assignment
         def parse_masgn_node(node)
@@ -31,6 +34,7 @@ module CodeBreaker
           parse_children(node).map(&:values).flatten
         end
       end
+
     end
   end
 end
