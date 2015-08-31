@@ -28,7 +28,7 @@ module CodeBreaker
 
         # multiple left hand side
         def parse_mlhs_node(node)
-          parse_children(node).map { |var| var.values }.flatten
+          parse_children(node).map(&:values).flatten
         end
       end
     end

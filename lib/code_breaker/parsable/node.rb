@@ -11,8 +11,8 @@ module CodeBreaker
       end
 
       def parse_children(node)
-        node.children.reduce([]) do |res, child|
-          res << parse(child)
+        node.children.reduce([]) do |nodes, child|
+          nodes << parse(child)
         end
       end
 

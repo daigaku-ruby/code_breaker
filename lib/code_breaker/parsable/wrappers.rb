@@ -16,7 +16,7 @@ module CodeBreaker
           parse_children(node).flatten(1)
         end
 
-        alias :parse_begin_node   :parse_children
+        alias :parse_begin_node :parse_children
       end
     end
   end
