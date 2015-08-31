@@ -20,6 +20,10 @@ module CodeBreaker
         { node.type => parse_children(node) }
       end
 
+      def parse_as_last_child_hash(node)
+        { node.type => node.children.last }
+      end
+
     end
   end
 end

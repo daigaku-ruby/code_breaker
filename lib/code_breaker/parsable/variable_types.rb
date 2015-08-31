@@ -8,9 +8,11 @@ module CodeBreaker
       include Parsable::Node
 
       included do
-        def parse_const_node(node)
-          { node.type => node.children.last }
-        end
+        alias :parse_const_node :parse_as_last_child_hash
+        alias :parse_lvar_node :parse_as_last_child_hash # local variable
+        alias :parse_ivar_node :parse_as_last_child_hash # instance variable
+        alias :parse_cvar_node :parse_as_last_child_hash # class variable
+        alias :parse_gvar_node :parse_as_last_child_hash # global variable
       end
     end
   end
