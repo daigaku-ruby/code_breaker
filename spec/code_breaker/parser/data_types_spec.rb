@@ -15,8 +15,7 @@ describe CodeBreaker::Parser do
         "4_611_686_018_427_387_904" => Bignum
       }.each do |input, output|
         it "returns #{output} for #{input}" do
-          parsed = CodeBreaker::Parser.new("#{input}").run
-          expect(parsed).to eq output
+          expect(input).to be_parsed_as output
         end
       end
     end
@@ -25,9 +24,7 @@ describe CodeBreaker::Parser do
       it 'returns a Hash with key :array and an Array of items' do
         input = "[1, 'apple', :a, Day]"
         output = { array: [Fixnum, String, Symbol, { const: :Day }] }
-
-        parsed = CodeBreaker::Parser.new(input).run
-        expect(parsed).to eq output
+        expect(input).to be_parsed_as output
       end
     end
 
@@ -35,9 +32,7 @@ describe CodeBreaker::Parser do
       it 'returns a Hash with key :hash and a Hash of key/type pairs' do
         input = "{ euro: '€', 'dollar' => 1.1521 }"
         output = { hash: { Symbol => String, String => Float } }
-
-        parsed = CodeBreaker::Parser.new(input).run
-        expect(parsed).to eq output
+        expect(input).to be_parsed_as output
       end
     end
   end

@@ -6,8 +6,8 @@ describe CodeBreaker::Parser do
     context 'for root node respresenting a send type' do
       [Rational, Complex].each do |number|
         it "returns #{number} for a #{number.to_s.downcase} number" do
-          parsed = CodeBreaker::Parser.new("#{number}(2, 3)").run
-          expect(parsed).to eq number
+          input = "#{number}(2, 3)"
+          expect(input).to be_parsed_as number
         end
       end
     end
@@ -16,18 +16,14 @@ describe CodeBreaker::Parser do
       it 'returns an Array with the classes and methods' do
         input = "1 + 3.5 * Rational(2,3) - Complex(1, 2)"
         output = [Fixnum, :+, Float, :*, Rational, :-, Complex]
-
-        parsed = CodeBreaker::Parser.new(input).run
-        expect(parsed).to eq output
+        expect(input).to be_parsed_as output
       end
 
       describe 'with braces' do
         it 'returns a nested Array with the classes and methods' do
           input = "((1 + 3.5) - Rational(2,3)) * Complex(1, 2)"
           output = [[[Fixnum, :+, Float], :-, Rational], :*, Complex]
-
-          parsed = CodeBreaker::Parser.new(input).run
-          expect(parsed).to eq output
+          expect(input).to be_parsed_as output
         end
       end
     end

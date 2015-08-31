@@ -7,9 +7,7 @@ describe CodeBreaker::Parser do
       it 'returns a Hash with key :irange and the bounding types' do
         input = "1.2..'impossible range, still parsed'"
         output = { irange: [Float, String] }
-
-        parsed = CodeBreaker::Parser.new(input).run
-        expect(parsed).to eq output
+        expect(input).to be_parsed_as output
       end
     end
 
@@ -17,9 +15,7 @@ describe CodeBreaker::Parser do
       it 'returns a Hash with key :erange and the bounding types' do
         input = "1.2...4"
         output = { erange: [Float, Fixnum] }
-
-        parsed = CodeBreaker::Parser.new(input).run
-        expect(parsed).to eq output
+        expect(input).to be_parsed_as output
       end
     end
   end
