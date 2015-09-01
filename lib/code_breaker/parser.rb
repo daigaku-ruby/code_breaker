@@ -9,6 +9,7 @@ module CodeBreaker
     include Parsable::DataTypes
     include Parsable::Assignments
     include Parsable::Ranges
+    include Parsable::Keywords
 
     attr_reader :input
 

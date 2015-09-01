@@ -32,6 +32,10 @@ module CodeBreaker
           Float
         end
 
+        def parse_regexp_node(node)
+          Regexp
+        end
+
         def parse_int_node(node)
           node.children[0].class
         end

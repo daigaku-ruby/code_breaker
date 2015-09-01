@@ -12,6 +12,7 @@ describe CodeBreaker::Parser do
         ":symbol"   => Symbol,
         "3.5"       => Float,
         "1"         => Fixnum,
+        "/^R+uby$/" => Regexp,
         "4_611_686_018_427_387_904" => Bignum
       }.each do |input, output|
         it "returns #{output} for #{input}" do
