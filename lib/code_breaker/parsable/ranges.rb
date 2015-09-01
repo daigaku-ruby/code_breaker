@@ -9,7 +9,7 @@ module CodeBreaker
 
       included do
         alias :parse_irange_node :parse_as_hash # inclusive range a..b
-        alias :parse_erange_node :parse_as_hash # exclusive range a..b
+        alias :parse_erange_node :parse_as_hash # exclusive range a...b
       end
     end
   end
