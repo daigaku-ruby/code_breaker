@@ -10,6 +10,7 @@ module CodeBreaker
     include Parsable::Assignments
     include Parsable::Ranges
     include Parsable::Keywords
+    include Parsable::LanguageElements
 
     attr_reader :input
 
