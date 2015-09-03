@@ -70,5 +70,30 @@ describe CodeBreaker::Parser do
       end
     end
 
+    context 'for a root node representing a method definition' do
+      context 'without arguments' do
+        it 'returns a Hash with key :def and the method name, args and body' do
+          input = "def greet\n'Hello!'\nend"
+          output = { def: [:greet, { args: []}, String] }
+          expect(input).to be_parsed_as output
+        end
+      end
+
+      context 'with arguments' do
+        it 'returns a Hash with key :def and the method name, args and body' do
+          input = "def greet(name)\n'Hello' + name + '!'\nend"
+          output = {
+            def: [
+              :greet,
+              { args: [{ arg: :name }] },
+              [String, :+, { lvar: :name }, :+, String]
+            ]
+          }
+
+          expect(input).to be_parsed_as output
+        end
+      end
+    end
+
   end
 end
