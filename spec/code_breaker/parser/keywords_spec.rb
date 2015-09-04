@@ -95,5 +95,32 @@ describe CodeBreaker::Parser do
       end
     end
 
+    context 'for a root node representing a module definition' do
+      context 'without a body' do
+        it 'return a Hash with key :module and the name value' do
+          input = "module Breakable\nend"
+          output = { module: [{ const: :Breakable }] }
+          expect(input).to be_parsed_as output
+        end
+      end
+
+      context 'with a body' do
+        it 'returns a Hash with key :module and the name and body as value' do
+          input = "module Breakable\nCONST = 1\nOTHER_CONST='a'.freeze\nend"
+          output = {
+            module: [
+              { const: :Breakable },
+              [
+                { casgn: [:CONST, Fixnum] },
+                { casgn: [:OTHER_CONST, [String, :freeze]] }
+              ]
+            ]
+          }
+
+          expect(input).to be_parsed_as output
+        end
+      end
+    end
+
   end
 end

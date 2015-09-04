@@ -35,6 +35,14 @@ describe CodeBreaker::Parser do
       end
     end
 
+    context 'for a constant assignment' do
+      it 'returns a Hash with key :casgn' do
+        input = "WHATEVER = true.freeze"
+        output = { casgn: [:WHATEVER, [TrueClass, :freeze]] }
+        expect(input).to be_parsed_as output
+      end
+    end
+
     context 'for a multiple variable assignment' do
       it 'returns an assignment hash if RHS is an Array' do
         input = "x, y = ['holy', 108]"

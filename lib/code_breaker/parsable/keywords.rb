@@ -11,6 +11,7 @@ module CodeBreaker
         alias :parse_or_node :parse_as_hash
         alias :parse_and_node :parse_as_hash
         alias :parse_def_node :parse_as_hash
+        alias :parse_module_node :parse_as_hash
 
         def parse_if_node(node)
           condition = node.children[0]
@@ -21,6 +22,14 @@ module CodeBreaker
           clause[:else] = parse(else_body) if else_body
 
           clause
+        end
+
+        def parse_module_node(node)
+          name = parse(node.children[0])
+          body = node.children[1].nil? ? nil : parse(node.children[1])
+          value = body ? [name, body] : [name]
+
+          { node.type => value }
         end
       end
 

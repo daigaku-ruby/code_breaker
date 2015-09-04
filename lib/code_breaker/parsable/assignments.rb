@@ -33,6 +33,15 @@ module CodeBreaker
         def parse_mlhs_node(node)
           parse_children(node).map(&:values).flatten
         end
+
+        # constant assignment
+        def parse_casgn_node(node)
+          name = node.children[1]
+          value = parse(node.children[2])
+
+          { node.type => [name, value] }
+        end
+
       end
 
     end
