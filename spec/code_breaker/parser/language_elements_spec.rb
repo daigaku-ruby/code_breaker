@@ -41,5 +41,55 @@ describe CodeBreaker::Parser do
       end
     end
 
+    context 'for a root node representing a block argument' do
+      it 'returns a Hash with key :blockarg and the variable name' do
+        input = "def greet(name, &block)\n'hello!'\nend"
+        output = {
+          def: [
+            :greet,
+            { args: [{ arg: :name }, { blockarg: :block }]},
+             String
+          ]
+        }
+
+        expect(input).to be_parsed_as output
+      end
+    end
+
+    context 'for a root node representing a rest argument' do
+      it 'returns a Hash with key :restarg and the variable name' do
+        input = "def greet(name, *args)\n'hello!'\nend"
+        output = {
+          def: [
+            :greet,
+            { args: [{ arg: :name }, { restarg: :args }]},
+             String
+          ]
+        }
+
+        expect(input).to be_parsed_as output
+      end
+    end
+
+    context 'for a root node representing an optional argument' do
+      it 'returns a Hash with key :optarg and the variable name' do
+        input = "def greet(name, options = {a: 1})\n'hello!'\nend"
+        output = {
+          def: [
+            :greet,
+            {
+              args: [
+                { arg: :name},
+                { optarg: [:options, { hash: { Symbol => Fixnum } }] }
+              ]
+            },
+            String
+          ]
+        }
+
+        expect(input).to be_parsed_as output
+      end
+    end
+
   end
 end
