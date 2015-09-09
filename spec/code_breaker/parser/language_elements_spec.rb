@@ -132,6 +132,14 @@ describe CodeBreaker::Parser do
           expect(input).to be_parsed_as output
         end
       end
+
+      context 'for a root node representing a splat operator' do
+        it 'returns a Hash with key :splat and the splat values' do
+          input = 'puts(*[1,2])'
+          output = [:puts, { splat: { array: [Fixnum, Fixnum] } }]
+          expect(input).to be_parsed_as output
+        end
+      end
     end
 
   end

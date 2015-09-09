@@ -19,7 +19,14 @@ module CodeBreaker
         alias :parse_kwrestarg_node :parse_as_last_child_hash # keyword rest argument
 
         def parse_block_pass_node(node)
-          { block_pass: node.children.first.children.last }
+          { node.type => node.children.first.children.last }
+        end
+
+        def parse_splat_node(node)
+          children = parse_children(node).flatten(1)
+          values = children.length == 1 ? children[0] : children
+
+          { node.type =>  values }
         end
       end
     end
