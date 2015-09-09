@@ -42,7 +42,7 @@ describe CodeBreaker::Parser do
     end
 
     context 'for a root node representing a block argument' do
-      it 'returns a Hash with key :blockarg and the variable name' do
+      it 'returns a Hash with key :blockarg and the argument name' do
         input = "def greet(name, &block)\n'hello!'\nend"
         output = {
           def: [
@@ -57,7 +57,7 @@ describe CodeBreaker::Parser do
     end
 
     context 'for a root node representing a rest argument' do
-      it 'returns a Hash with key :restarg and the variable name' do
+      it 'returns a Hash with key :restarg and the argument name' do
         input = "def greet(name, *args)\n'hello!'\nend"
         output = {
           def: [
@@ -72,7 +72,7 @@ describe CodeBreaker::Parser do
     end
 
     context 'for a root node representing an optional argument' do
-      it 'returns a Hash with key :optarg and the variable name' do
+      it 'returns a Hash with key :optarg and the argument name' do
         input = "def greet(name, options = {a: 1})\n'hello!'\nend"
         output = {
           def: [
@@ -88,6 +88,49 @@ describe CodeBreaker::Parser do
         }
 
         expect(input).to be_parsed_as output
+      end
+
+      context 'for a root node representing a keyword argument' do
+        it 'returns a Hash with key :kwarg and the argument name' do
+          input = "def greet(title:, name:)\n\nend"
+          output = {
+            def: [
+              :greet,
+              { args: [{ kwarg: :title }, { kwarg: :name }] }
+            ]
+          }
+
+          expect(input).to be_parsed_as output
+        end
+      end
+
+
+      context 'for a root node representing an optional keyword argument' do
+        it 'returns a Hash with key :kwoptarg and the argument name and type' do
+          input = "def greet(title: 'Mr.')\n\nend"
+          output = {
+            def: [
+              :greet,
+              { args: [{ kwoptarg: [:title, String] }] }
+            ]
+          }
+
+          expect(input).to be_parsed_as output
+        end
+      end
+
+      context 'for a root node representing a rest keyword argument' do
+        it 'returns a Hash with key :kwrestarg and the argument name' do
+          input = "def greet(name:, **opts)\n\nend"
+          output = {
+            def: [
+              :greet,
+              { args: [{ kwarg: :name }, { kwrestarg: :opts }]}
+            ]
+          }
+
+          expect(input).to be_parsed_as output
+        end
       end
     end
 

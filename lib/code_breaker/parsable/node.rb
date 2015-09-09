@@ -12,7 +12,8 @@ module CodeBreaker
 
       def parse_children(node)
         node.children.reduce([]) do |nodes, child|
-          nodes << parse(child)
+          nodes << parse(child) unless child.nil?
+          nodes
         end
       end
 

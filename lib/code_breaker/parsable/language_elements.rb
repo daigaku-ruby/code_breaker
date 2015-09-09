@@ -14,6 +14,9 @@ module CodeBreaker
         alias :parse_blockarg_node :parse_as_last_child_hash
         alias :parse_restarg_node :parse_as_last_child_hash
         alias :parse_optarg_node :parse_as_hash # optional argument
+        alias :parse_kwarg_node :parse_as_last_child_hash # keyword argument
+        alias :parse_kwoptarg_node :parse_as_hash # optional keyword argument
+        alias :parse_kwrestarg_node :parse_as_last_child_hash # keyword rest argument
 
         def parse_block_pass_node(node)
           { block_pass: node.children.first.children.last }

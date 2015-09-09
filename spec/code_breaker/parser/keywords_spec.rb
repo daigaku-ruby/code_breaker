@@ -93,6 +93,20 @@ describe CodeBreaker::Parser do
           expect(input).to be_parsed_as output
         end
       end
+
+      context 'without a body' do
+        it 'returns a Hash with key :def and the method name and args' do
+          input = "def greet(name)\n\nend"
+          output = {
+            def: [
+              :greet,
+              { args: [{ arg: :name }] }
+            ]
+          }
+
+          expect(input).to be_parsed_as output
+        end
+      end
     end
 
     context 'for a root node representing a module definition' do
