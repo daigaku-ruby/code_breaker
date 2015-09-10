@@ -24,6 +24,11 @@ module CodeBreaker
           String
         end
 
+        # interpolated executed string
+        def parse_xstr_node(node)
+          { node.type => parse_children(node).first }
+        end
+
         def parse_sym_node(node)
           Symbol
         end

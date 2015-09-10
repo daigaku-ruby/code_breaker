@@ -36,5 +36,13 @@ describe CodeBreaker::Parser do
         expect(input).to be_parsed_as output
       end
     end
+
+    context 'for a root node representing a interpolated executed string' do
+      it 'returns a Hash with key :xstr and value String' do
+        input = "%x{string}"
+        output = { xstr: String }
+        expect(input).to be_parsed_as output
+      end
+    end
   end
 end
