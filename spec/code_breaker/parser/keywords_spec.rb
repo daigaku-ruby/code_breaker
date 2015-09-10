@@ -136,5 +136,19 @@ describe CodeBreaker::Parser do
       end
     end
 
+    context 'for a root node representing a return' do
+      it 'returns a Hash with key :return and the returned value' do
+        input = "return 3"
+        output = { return: Fixnum }
+        expect(input).to be_parsed_as output
+      end
+
+      it 'returns a Hash with key :return and the returned values as Array' do
+        input = "return 3 + 2"
+        output = { return: [Fixnum, :+, Fixnum] }
+        expect(input).to be_parsed_as output
+      end
+    end
+
   end
 end

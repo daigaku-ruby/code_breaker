@@ -31,6 +31,13 @@ module CodeBreaker
 
           { node.type => value }
         end
+
+        def parse_return_node(node)
+          children = parse_children(node)
+          values = children.length == 1 ? children[0] : children
+
+          { node.type => values }
+        end
       end
 
     end
