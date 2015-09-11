@@ -12,6 +12,7 @@ module CodeBreaker
         alias :parse_and_node :parse_as_hash
         alias :parse_def_node :parse_as_hash
         alias :parse_module_node :parse_as_hash
+        alias :parse_yield_node :parse_as_hash
 
         def parse_if_node(node)
           condition = node.children[0]

@@ -150,5 +150,19 @@ describe CodeBreaker::Parser do
       end
     end
 
+    context 'for a root node representing a yield' do
+      it 'returns a Hash with key :yield and the types of given arguments' do
+        input = "yield(3, 'beer')"
+        output = { yield: [Fixnum, String] }
+        expect(input).to be_parsed_as output
+      end
+
+      it 'returns a Hash with key :yield and value [] without arguments' do
+        input = "yield"
+        output = { yield: [] }
+        expect(input).to be_parsed_as output
+      end
+    end
+
   end
 end
