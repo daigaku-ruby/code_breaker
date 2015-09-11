@@ -164,5 +164,21 @@ describe CodeBreaker::Parser do
       end
     end
 
+    context 'for a root node representing a while loop' do
+      it 'returns a Hash with key :while and the loop body under :do key' do
+        input = "while true == false do\nputs 'You did the impossible!'\nend"
+        output = { while: [TrueClass, :==, FalseClass], do: [:puts, String] }
+        expect(input).to be_parsed_as output
+      end
+    end
+
+    context 'for a root node representing a until loop' do
+      it 'returns a Hash with key :until and the loop body under :do key' do
+        input = "until true == false do\nputs 'You did the impossible!'\nend"
+        output = { until: [TrueClass, :==, FalseClass], do: [:puts, String] }
+        expect(input).to be_parsed_as output
+      end
+    end
+
   end
 end

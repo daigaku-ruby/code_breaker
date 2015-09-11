@@ -14,12 +14,22 @@ module CodeBreaker
         alias :parse_module_node :parse_as_hash
         alias :parse_yield_node :parse_as_hash
 
+        def parse_loop_node(node)
+          condition = node.children[0]
+          body = node.children[1]
+
+          { node.type => parse(condition), do: parse(body) }
+        end
+
+        alias :parse_while_node :parse_loop_node
+        alias :parse_until_node :parse_loop_node
+
         def parse_if_node(node)
           condition = node.children[0]
           if_body = node.children[1]
           else_body = node.children[2]
 
-          clause = { if: parse(condition), then: parse(if_body) }
+          clause = { node.type => parse(condition), then: parse(if_body) }
           clause[:else] = parse(else_body) if else_body
 
           clause
