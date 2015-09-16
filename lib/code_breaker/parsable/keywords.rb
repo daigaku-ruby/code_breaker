@@ -24,6 +24,14 @@ module CodeBreaker
         alias :parse_while_node :parse_loop_node
         alias :parse_until_node :parse_loop_node
 
+        def parse_for_node(node)
+          variable  = node.children[0]
+          range     = node.children[1]
+          body      = node.children[2]
+
+          { node.type => parse(variable), in: parse(range), do: parse(body) }
+        end
+
         def parse_if_node(node)
           condition = node.children[0]
           if_body = node.children[1]

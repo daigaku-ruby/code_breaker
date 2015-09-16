@@ -180,5 +180,18 @@ describe CodeBreaker::Parser do
       end
     end
 
+    context 'for a root node representing a for loop' do
+      it 'returns a Hash with key :for and the loop body under :do key' do
+        input = "for i in 1..5 do\nputs i\nend"
+        output = {
+          for: { lvasgn: [:i] },
+          in: { irange: [Fixnum, Fixnum] },
+          do: [:puts, { lvar: :i }]
+        }
+
+        expect(input).to be_parsed_as output
+      end
+    end
+
   end
 end
