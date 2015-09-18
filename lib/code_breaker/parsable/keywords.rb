@@ -8,11 +8,18 @@ module CodeBreaker
       include Parsable::Node
 
       included do
-        alias :parse_or_node :parse_as_hash
-        alias :parse_and_node :parse_as_hash
-        alias :parse_def_node :parse_as_hash
-        alias :parse_module_node :parse_as_hash
-        alias :parse_yield_node :parse_as_hash
+        alias :parse_or_node      :parse_as_hash
+        alias :parse_and_node     :parse_as_hash
+        alias :parse_def_node     :parse_as_hash
+        alias :parse_module_node  :parse_as_hash
+        alias :parse_yield_node   :parse_as_hash
+
+        alias :parse_break_node :parse_as_node_type
+        alias :parse_next_node  :parse_as_node_type
+        alias :parse_retry_node :parse_as_node_type
+        alias :parse_self_node  :parse_as_node_type
+        alias :parse_rescue_node  :parse_as_hash
+        alias :parse_resbody_node  :parse_as_hash
 
         def parse_loop_node(node)
           condition = node.children[0]
@@ -56,6 +63,21 @@ module CodeBreaker
           values = children.length == 1 ? children[0] : children
 
           { node.type => values }
+        end
+
+        def parse_kwbegin_node(node)
+          rescue_given = node.children.first.type == :rescue
+
+          if rescue_given
+            rescue_part = parse(node.children.first)[:rescue]
+
+            {
+              begin: rescue_part.first,
+              rescue: rescue_part.last[:resbody].first
+            }
+          else
+            { begin: parse(node.children.last) }
+          end
         end
       end
 

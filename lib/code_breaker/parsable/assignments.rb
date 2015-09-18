@@ -37,9 +37,10 @@ module CodeBreaker
         # constant assignment
         def parse_casgn_node(node)
           name = node.children[1]
-          value = parse(node.children[2])
+          children = node.children[2]
+          value = children.nil? ? name : [name, parse(node.children[2])]
 
-          { node.type => [name, value] }
+          { node.type => value }
         end
 
       end

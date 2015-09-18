@@ -193,5 +193,52 @@ describe CodeBreaker::Parser do
       end
     end
 
+    context 'for a root node representing a break instruction' do
+      it 'returns a :break symbol' do
+        expect('break').to be_parsed_as :break
+      end
+    end
+
+    context 'for a root node representing a next instruction' do
+      it 'returns a :next symbol' do
+        expect('next').to be_parsed_as :next
+      end
+    end
+
+    context 'for a root node representing a retry instruction' do
+      it 'returns a :retry symbol' do
+        expect('retry').to be_parsed_as :retry
+      end
+    end
+
+    context 'for a root node representing a self instruction' do
+      it 'returns a :self symbol' do
+        expect('self').to be_parsed_as :self
+      end
+    end
+
+    context 'for a root node representing a begin instruction' do
+
+      describe 'without a rescue statement' do
+        it 'returns a Hash with key :begin and the body as value' do
+          input = "begin puts '' end"
+          output = { begin: [:puts, String] }
+          expect(input).to be_parsed_as output
+        end
+      end
+
+      describe 'with a rescue statement' do
+        it 'returns a Hash with keys :begin and :rescue and its bodies' do
+          input = "begin\n  raise Exception.new \nrescue\n  puts 'hm...'\nend"
+          output = {
+            begin: [:raise, { const: :Exception }, :new],
+            rescue: [:puts, String]
+          }
+
+          expect(input).to be_parsed_as output
+        end
+      end
+    end
+
   end
 end

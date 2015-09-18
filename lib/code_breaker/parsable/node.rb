@@ -25,6 +25,10 @@ module CodeBreaker
         { node.type => node.children.last }
       end
 
+      def parse_as_node_type(node)
+        node.type
+      end
+
       def method_missing(method, *args, &block)
         node_type = method.to_s.match(/^parse_(.+)_node$/).captures.first
 
