@@ -20,6 +20,7 @@ module CodeBreaker
         alias :parse_self_node  :parse_as_node_type
         alias :parse_rescue_node  :parse_as_hash
         alias :parse_resbody_node  :parse_as_hash
+        alias :parse_case_node  :parse_as_hash
 
         def parse_loop_node(node)
           condition = node.children[0]
@@ -78,6 +79,23 @@ module CodeBreaker
           else
             { begin: parse(node.children.last) }
           end
+        end
+
+        def parse_case_node(node)
+          case_part = parse(node.children.first)
+          when_parts = node.children[1...-1].map { |child| parse(child) }
+          else_part = parse(node.children.last)
+
+          statement = { case: when_parts.unshift(case_part) }
+          statement[:case] << { else: else_part } if else_part
+          statement
+        end
+
+        def parse_when_node(node)
+          when_part = parse(node.children[0])
+          then_part = parse(node.children[1])
+
+          { when: when_part, then: then_part }
         end
       end
 

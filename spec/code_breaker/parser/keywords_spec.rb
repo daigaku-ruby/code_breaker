@@ -240,5 +240,44 @@ describe CodeBreaker::Parser do
       end
     end
 
+    context 'for a root node representing a case statement' do
+      describe 'with else part' do
+        it 'returns a Hash with key :case and its when/then/else hashs as value' do
+          input = "state = :new\ncase state\n  when :new then 1.to_s\n  when :old then 2.to_s\nelse\n 3 end"
+          output = [
+            { lvasgn: [:state, Symbol] },
+            {
+              case: [
+                { lvar: :state },
+                { when: Symbol, then: [Fixnum, :to_s] },
+                { when: Symbol, then: [Fixnum, :to_s] },
+                { else: Fixnum }
+              ]
+            }
+          ]
+
+          expect(input).to be_parsed_as output
+        end
+      end
+
+      describe 'without else part' do
+        it 'returns a Hash with key :case and its when/then hashs as value' do
+          input = "state = :new\ncase state\n  when :new then 1.to_s\n  when :old then 2.to_s\nend"
+          output = [
+            { lvasgn: [:state, Symbol] },
+            {
+              case: [
+                { lvar: :state },
+                { when: Symbol, then: [Fixnum, :to_s] },
+                { when: Symbol, then: [Fixnum, :to_s] },
+              ]
+            }
+          ]
+
+          expect(input).to be_parsed_as output
+        end
+      end
+    end
+
   end
 end

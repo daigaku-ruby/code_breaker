@@ -3,6 +3,8 @@ module CodeBreaker
     module Node
 
       def parse(node)
+        return if node.nil?
+
         if node.kind_of?(Symbol)
           node
         else
