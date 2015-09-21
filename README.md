@@ -21,18 +21,16 @@ programming tasks in learning tools like [Daigaku](https://github.com/daigaku-ru
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'code_breaker', github: 'daigaku-ruby/code_breaker'
+gem 'code_breaker'
 ```
 
 And then execute:
 
     $ bundle
 
-Or download and install it yourself as:
+Or install it yourself as:
 
-    $ git clone git@github.com:daigaku-ruby/code_breaker.git
-    $ cd code_breaker
-    $ rake install
+    $ gem install 'code_breaker'
 
 ## Usage
 
@@ -43,7 +41,7 @@ require 'code_breaker'
 
 code_snippet = 'crazy_number = Rational(3, 5) + 42 - Complex(2.3, 6.4) * 1.2'
 CodeBreaker.parse(code_snippet)
-# => [:crazy_number, :'=', Rational, :+, Fixnum, :-, Complex, :*, Float]
+# => {:lvasgn=>[:crazy_number, [Rational, :+, Fixnum, :-, Complex, :*, Float]]}
 
 code_snippet = '"hello" + "World"'
 CodeBreaker.parse(code_snippet)
@@ -65,6 +63,10 @@ parser.output
 parser.input
 # => "\"hello\"+\"world\""
 ```
+
+## Implemented syntax
+
+For an overview of the implemented syntax and examples for certain parsed Ruby statement please see the project's [Wiki](https://github.com/daigaku-ruby/code_breaker/wiki).
 
 ## Development
 
