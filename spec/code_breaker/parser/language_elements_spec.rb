@@ -80,7 +80,7 @@ describe CodeBreaker::Parser do
             {
               args: [
                 { arg: :name},
-                { optarg: [:options, { hash: { Symbol => Fixnum } }] }
+                { optarg: [:options, { hash: [{ Symbol => Fixnum }] }] }
               ]
             },
             String

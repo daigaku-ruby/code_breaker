@@ -32,7 +32,13 @@ describe CodeBreaker::Parser do
     context 'for a root node representing a Hash' do
       it 'returns a Hash with key :hash and a Hash of key/type pairs' do
         input = "{ euro: '€', 'dollar' => 1.1521 }"
-        output = { hash: { Symbol => String, String => Float } }
+        output = { hash: [{ Symbol => String }, { String => Float }] }
+        expect(input).to be_parsed_as output
+      end
+
+      it 'returns a Hash with key :hash and a Hash of key/type pairs' do
+        input = "{ euro: '€', dollar: 1.1521 }"
+        output = { hash: [{ Symbol => String }, { Symbol => Float }] }
         expect(input).to be_parsed_as output
       end
     end
