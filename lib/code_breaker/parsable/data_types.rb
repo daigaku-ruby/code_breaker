@@ -45,14 +45,11 @@ module CodeBreaker
           node.children[0].class
         end
 
-        def parse_hash_node(node)
-          { node.type => parse_children(node).inject(:merge).to_h }
-        end
-
         def parse_pair_node(node)
           { parse(node.children[0]) => parse(node.children[1]) }
         end
 
+        alias :parse_hash_node :parse_as_hash
         alias :parse_array_node :parse_as_hash
       end
     end
