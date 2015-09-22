@@ -11,16 +11,14 @@ module CodeBreaker
         alias :parse_or_node      :parse_as_hash
         alias :parse_and_node     :parse_as_hash
         alias :parse_def_node     :parse_as_hash
-        alias :parse_module_node  :parse_as_hash
         alias :parse_yield_node   :parse_as_hash
-
-        alias :parse_break_node :parse_as_node_type
-        alias :parse_next_node  :parse_as_node_type
-        alias :parse_retry_node :parse_as_node_type
-        alias :parse_self_node  :parse_as_node_type
         alias :parse_rescue_node  :parse_as_hash
-        alias :parse_resbody_node  :parse_as_hash
-        alias :parse_case_node  :parse_as_hash
+        alias :parse_resbody_node :parse_as_hash
+
+        alias :parse_break_node   :parse_as_node_type
+        alias :parse_next_node    :parse_as_node_type
+        alias :parse_retry_node   :parse_as_node_type
+        alias :parse_self_node    :parse_as_node_type
 
         def parse_loop_node(node)
           condition = node.children[0]
