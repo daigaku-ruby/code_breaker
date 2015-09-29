@@ -10,6 +10,18 @@ describe CodeBreaker::Parser do
   it { is_expected.to respond_to :input }
   it { is_expected.to respond_to :output }
 
+  context 'for an empty string as input' do
+    it 'returns an empty array' do
+      expect('').to be_parsed_as []
+    end
+  end
+
+  context 'for a comment as input' do
+    it 'returns an empty array' do
+      expect('# a comment').to be_parsed_as []
+    end
+  end
+
   describe 'input' do
     it 'returns the code snippet the parser was instanciated with' do
       expect(subject.input).to eq code_snippet
