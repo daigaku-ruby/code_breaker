@@ -21,7 +21,7 @@ module CodeBreaker
     def run
       unless @output
         ast = ::Parser::CurrentRuby.parse(input)
-        @output = parse(ast.loc.node)
+        @output = ast.nil? ? [] : parse(ast.loc.node)
       end
 
       @output
