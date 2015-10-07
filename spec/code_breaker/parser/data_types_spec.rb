@@ -43,10 +43,18 @@ describe CodeBreaker::Parser do
       end
     end
 
-    context 'for a root node representing a interpolated executed string' do
+    context 'for a root node representing an interpolated executed string' do
       it 'returns a Hash with key :xstr and value String' do
         input = "%x{string}"
         output = { xstr: String }
+        expect(input).to be_parsed_as output
+      end
+    end
+
+    context 'for a root node representing an interpolated string' do
+      it 'returns a Hash with key :dstr and an Array of interpolation values' do
+        input = '"#{1 + 2} interpolated string #{\'here\'}"'
+        output = { dstr: [[Fixnum, :+, Fixnum], String, [String]] }
         expect(input).to be_parsed_as output
       end
     end
