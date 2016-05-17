@@ -3,7 +3,6 @@ require 'active_support/concern'
 module CodeBreaker
   module Parsable
     module Wrappers
-
       extend ActiveSupport::Concern
       include Parsable::Node
 
@@ -16,7 +15,7 @@ module CodeBreaker
           parse_children(node).flatten(1)
         end
 
-        alias :parse_begin_node :parse_children
+        alias_method :parse_begin_node, :parse_children
       end
     end
   end
