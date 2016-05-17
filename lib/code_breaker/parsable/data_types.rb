@@ -3,7 +3,6 @@ require 'active_support/concern'
 module CodeBreaker
   module Parsable
     module DataTypes
-
       extend ActiveSupport::Concern
       include Parsable::Node
 
@@ -32,7 +31,7 @@ module CodeBreaker
         # interpolated string
         def parse_dstr_node(node)
           values = parse_as_hash(node)[node.type].map do |value|
-            if value.kind_of?(Array)
+            if value.is_a?(Array)
               value.flatten(1)
             else
               value
@@ -62,8 +61,8 @@ module CodeBreaker
           { parse(node.children[0]) => parse(node.children[1]) }
         end
 
-        alias :parse_hash_node :parse_as_hash
-        alias :parse_array_node :parse_as_hash
+        alias_method :parse_hash_node,  :parse_as_hash
+        alias_method :parse_array_node, :parse_as_hash
       end
     end
   end

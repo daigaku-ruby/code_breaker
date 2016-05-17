@@ -27,6 +27,6 @@ module CodeBreaker
       @output
     end
 
-    alias :output :run
+    alias output run
   end
 end

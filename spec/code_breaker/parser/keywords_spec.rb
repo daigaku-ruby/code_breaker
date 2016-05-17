@@ -1,12 +1,11 @@
 require 'spec_helper'
 
 describe CodeBreaker::Parser do
-
   describe '#run' do
     ['||', 'or'].each do |connector|
       context "for a root node representing an #{connector} connection" do
         it 'returns a Hash with key :or and the connected children' do
-          input = "1.to_s #{connector} 5.5"
+          input  = "1.to_s #{connector} 5.5"
           output = { or: [[Fixnum, :to_s], Float] }
           expect(input).to be_parsed_as output
         end
@@ -16,7 +15,7 @@ describe CodeBreaker::Parser do
     ['&&', 'and'].each do |connector|
       context "for a root node representing an #{connector} connection" do
         it 'returns a Hash with key :and and the connected children' do
-          input = "1.to_s #{connector} 5.5"
+          input  = "1.to_s #{connector} 5.5"
           output = { and: [[Fixnum, :to_s], Float] }
           expect(input).to be_parsed_as output
         end
@@ -26,7 +25,7 @@ describe CodeBreaker::Parser do
     context 'for a root node representing an if clause' do
       context 'with only an if clause' do
         it 'returns a Hash with key :if and the if clause body' do
-          input = "'2'.to_i if 2 == '2'"
+          input  = "'2'.to_i if 2 == '2'"
           output = { if: [Fixnum, :==, String], then: [String, :to_i] }
           expect(input).to be_parsed_as output
         end
@@ -34,7 +33,7 @@ describe CodeBreaker::Parser do
 
       context 'with an if/then clause' do
         it 'returns a Hash with key :if and the if clause body' do
-          input = "if 2 == '2' then '2'.to_i end"
+          input  = "if 2 == '2' then '2'.to_i end"
           output = { if: [Fixnum, :==, String], then: [String, :to_i] }
           expect(input).to be_parsed_as output
         end
@@ -42,7 +41,7 @@ describe CodeBreaker::Parser do
 
       context 'with an if/else clause' do
         it 'returns a Hash with key :if and the if clause body' do
-          input = "if 2 == '2' then '2'.to_i else Rational(2, 3).to_s end"
+          input  = "if 2 == '2' then '2'.to_i else Rational(2, 3).to_s end"
           output = {
             if: [Fixnum, :==, String],
             then: [String, :to_i],
@@ -55,7 +54,7 @@ describe CodeBreaker::Parser do
 
       context 'with an if/elsif clause' do
         it 'returns a Hash with key :if and the if clause body' do
-          input = "if 2 == '2' then '2'.to_i elsif true then Object.new end"
+          input  = "if 2 == '2' then '2'.to_i elsif true then Object.new end"
           output = {
             if: [Fixnum, :==, String],
             then: [String, :to_i],
@@ -73,15 +72,15 @@ describe CodeBreaker::Parser do
     context 'for a root node representing a method definition' do
       context 'without arguments' do
         it 'returns a Hash with key :def and the method name, args and body' do
-          input = "def greet\n'Hello!'\nend"
-          output = { def: [:greet, { args: []}, String] }
+          input  = "def greet\n'Hello!'\nend"
+          output = { def: [:greet, { args: [] }, String] }
           expect(input).to be_parsed_as output
         end
       end
 
       context 'with arguments' do
         it 'returns a Hash with key :def and the method name, args and body' do
-          input = "def greet(name)\n'Hello' + name + '!'\nend"
+          input  = "def greet(name)\n'Hello' + name + '!'\nend"
           output = {
             def: [
               :greet,
@@ -96,7 +95,7 @@ describe CodeBreaker::Parser do
 
       context 'without a body' do
         it 'returns a Hash with key :def and the method name and args' do
-          input = "def greet(name)\n\nend"
+          input  = "def greet(name)\n\nend"
           output = {
             def: [
               :greet,
@@ -112,7 +111,7 @@ describe CodeBreaker::Parser do
     context 'for a root node representing a module definition' do
       context 'without a body' do
         it 'return a Hash with key :module and the name value' do
-          input = "module Breakable\nend"
+          input  = "module Breakable\nend"
           output = { module: [{ const: :Breakable }] }
           expect(input).to be_parsed_as output
         end
@@ -120,7 +119,7 @@ describe CodeBreaker::Parser do
 
       context 'with a body' do
         it 'returns a Hash with key :module and the name and body as value' do
-          input = "module Breakable\nCONST = 1\nOTHER_CONST='a'.freeze\nend"
+          input  = "module Breakable\nCONST = 1\nOTHER_CONST = 'a'.freeze\nend"
           output = {
             module: [
               { const: :Breakable },
@@ -138,13 +137,13 @@ describe CodeBreaker::Parser do
 
     context 'for a root node representing a return' do
       it 'returns a Hash with key :return and the returned value' do
-        input = "return 3"
+        input  = 'return 3'
         output = { return: Fixnum }
         expect(input).to be_parsed_as output
       end
 
       it 'returns a Hash with key :return and the returned values as Array' do
-        input = "return 3 + 2"
+        input  = 'return 3 + 2'
         output = { return: [Fixnum, :+, Fixnum] }
         expect(input).to be_parsed_as output
       end
@@ -152,13 +151,13 @@ describe CodeBreaker::Parser do
 
     context 'for a root node representing a yield' do
       it 'returns a Hash with key :yield and the types of given arguments' do
-        input = "yield(3, 'beer')"
+        input  = "yield(3, 'beer')"
         output = { yield: [Fixnum, String] }
         expect(input).to be_parsed_as output
       end
 
       it 'returns a Hash with key :yield and value [] without arguments' do
-        input = "yield"
+        input  = 'yield'
         output = { yield: [] }
         expect(input).to be_parsed_as output
       end
@@ -166,7 +165,7 @@ describe CodeBreaker::Parser do
 
     context 'for a root node representing a while loop' do
       it 'returns a Hash with key :while and the loop body under :do key' do
-        input = "while true == false do\nputs 'You did the impossible!'\nend"
+        input  = "while true == false do\nputs 'You did the impossible!'\nend"
         output = { while: [TrueClass, :==, FalseClass], do: [:puts, String] }
         expect(input).to be_parsed_as output
       end
@@ -174,7 +173,7 @@ describe CodeBreaker::Parser do
 
     context 'for a root node representing a until loop' do
       it 'returns a Hash with key :until and the loop body under :do key' do
-        input = "until true == false do\nputs 'You did the impossible!'\nend"
+        input  = "until true == false do\nputs 'You did the impossible!'\nend"
         output = { until: [TrueClass, :==, FalseClass], do: [:puts, String] }
         expect(input).to be_parsed_as output
       end
@@ -182,7 +181,7 @@ describe CodeBreaker::Parser do
 
     context 'for a root node representing a for loop' do
       it 'returns a Hash with key :for and the loop body under :do key' do
-        input = "for i in 1..5 do\nputs i\nend"
+        input  = "for i in 1..5 do\nputs i\nend"
         output = {
           for: { lvasgn: [:i] },
           in: { irange: [Fixnum, Fixnum] },
@@ -218,10 +217,9 @@ describe CodeBreaker::Parser do
     end
 
     context 'for a root node representing a begin instruction' do
-
       describe 'without a rescue statement' do
         it 'returns a Hash with key :begin and the body as value' do
-          input = "begin puts '' end"
+          input  = "begin puts '' end"
           output = { begin: [:puts, String] }
           expect(input).to be_parsed_as output
         end
@@ -229,7 +227,7 @@ describe CodeBreaker::Parser do
 
       describe 'with a rescue statement' do
         it 'returns a Hash with keys :begin and :rescue and its bodies' do
-          input = "begin\n  raise Exception.new \nrescue\n  puts 'hm...'\nend"
+          input  = "begin\n  raise Exception.new \nrescue\n  puts 'hm...'\nend"
           output = {
             begin: [:raise, { const: :Exception }, :new],
             rescue: [:puts, String]
@@ -243,7 +241,7 @@ describe CodeBreaker::Parser do
     context 'for a root node representing a case statement' do
       describe 'with else part' do
         it 'returns a Hash with key :case and its when/then/else hashs as value' do
-          input = "state = :new\ncase state\n  when :new then 1.to_s\n  when :old then 2.to_s\nelse\n 3 end"
+          input  = "state = :new\ncase state\n  when :new then 1.to_s\n  when :old then 2.to_s\nelse\n 3 end"
           output = [
             { lvasgn: [:state, Symbol] },
             {
@@ -262,14 +260,14 @@ describe CodeBreaker::Parser do
 
       describe 'without else part' do
         it 'returns a Hash with key :case and its when/then hashs as value' do
-          input = "state = :new\ncase state\n  when :new then 1.to_s\n  when :old then 2.to_s\nend"
+          input  = "state = :new\ncase state\n  when :new then 1.to_s\n  when :old then 2.to_s\nend"
           output = [
             { lvasgn: [:state, Symbol] },
             {
               case: [
                 { lvar: :state },
                 { when: Symbol, then: [Fixnum, :to_s] },
-                { when: Symbol, then: [Fixnum, :to_s] },
+                { when: Symbol, then: [Fixnum, :to_s] }
               ]
             }
           ]
@@ -278,6 +276,5 @@ describe CodeBreaker::Parser do
         end
       end
     end
-
   end
 end

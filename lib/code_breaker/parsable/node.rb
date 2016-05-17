@@ -1,11 +1,10 @@
 module CodeBreaker
   module Parsable
     module Node
-
       def parse(node)
         return if node.nil?
 
-        if node.kind_of?(Symbol)
+        if node.is_a?(Symbol)
           node
         else
           send("parse_#{node.type}_node", node)
@@ -13,7 +12,7 @@ module CodeBreaker
       end
 
       def parse_children(node)
-        node.children.reduce([]) do |nodes, child|
+        node.children.each_with_object([]) do |child, nodes|
           nodes << parse(child) unless child.nil?
           nodes
         end
@@ -37,16 +36,18 @@ module CodeBreaker
         if node_type.empty?
           super
         else
-          message = [
-            "Breaking the node type \"#{node_type}\" is not yet implemented.",
-            "You can open an issue on this in the project's Github repo under:",
-            "https://github.com/daigaku-ruby/code_breaker/issues/new\n"
-          ].join("\n")
-
-          raise NotImplementedError, message
+          raise NotImplementedError, not_implemented_message(node_type)
         end
       end
 
+      def not_implemented_message(node_type)
+        [
+          %(Breaking the node type "#{node_type}" is not yet implemented.),
+          'You can open an issue on this in the project’s Github repo under:',
+          'https://github.com/daigaku-ruby/code_breaker/issues/new',
+          ''
+        ].join("\n")
+      end
     end
   end
 end
