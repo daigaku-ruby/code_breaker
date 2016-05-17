@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe CodeBreaker::Parser do
-
   let(:code_snippet) { 'sum = "2".to_i + 3' }
 
   subject { CodeBreaker::Parser.new(code_snippet) }

@@ -1,19 +1,18 @@
 require 'spec_helper'
 
 describe CodeBreaker::Parser do
-
   describe '#run' do
     context 'for root node representing a basic type' do
       {
-        "nil"       => NilClass,
-        "true"      => TrueClass,
-        "false"     => FalseClass,
-        "'string'"  => String,
-        ":symbol"   => Symbol,
-        "3.5"       => Float,
-        "1"         => Fixnum,
-        "/^R+uby$/" => Regexp,
-        "4_611_686_018_427_387_904" => Bignum
+        'nil'       => NilClass,
+        'true'      => TrueClass,
+        'false'     => FalseClass,
+        '"string"'  => String,
+        ':symbol'   => Symbol,
+        '3.5'       => Float,
+        '1'         => Fixnum,
+        '/^R+uby$/' => Regexp,
+        '4_611_686_018_427_387_904' => Bignum
       }.each do |input, output|
         it "returns #{output} for #{input}" do
           expect(input).to be_parsed_as output
@@ -23,7 +22,7 @@ describe CodeBreaker::Parser do
 
     context 'for a root node representing an Array' do
       it 'returns a Hash with key :array and an Array of items' do
-        input = "[1, 'apple', :a, Day]"
+        input  = "[1, 'apple', :a, Day]"
         output = { array: [Fixnum, String, Symbol, { const: :Day }] }
         expect(input).to be_parsed_as output
       end
@@ -31,22 +30,30 @@ describe CodeBreaker::Parser do
 
     context 'for a root node representing a Hash' do
       it 'returns a Hash with key :hash and a Hash of key/type pairs' do
-        input = "{ euro: '€', 'dollar' => 1.1521 }"
+        input  = "{ euro: '€', 'dollar' => 1.1521 }"
         output = { hash: [{ Symbol => String }, { String => Float }] }
         expect(input).to be_parsed_as output
       end
 
       it 'returns a Hash with key :hash and a Hash of key/type pairs' do
-        input = "{ euro: '€', dollar: 1.1521 }"
+        input  = "{ euro: '€', dollar: 1.1521 }"
         output = { hash: [{ Symbol => String }, { Symbol => Float }] }
         expect(input).to be_parsed_as output
       end
     end
 
-    context 'for a root node representing a interpolated executed string' do
+    context 'for a root node representing an interpolated executed string' do
       it 'returns a Hash with key :xstr and value String' do
-        input = "%x{string}"
+        input  = '%x{string}'
         output = { xstr: String }
+        expect(input).to be_parsed_as output
+      end
+    end
+
+    context 'for a root node representing an interpolated string' do
+      it 'returns a Hash with key :dstr and an Array of interpolation values' do
+        input  = '"#{1 + 2} interpolated string #{\'here\'}"'
+        output = { dstr: [[Fixnum, :+, Fixnum], String, [String]] }
         expect(input).to be_parsed_as output
       end
     end
