@@ -1,6 +1,5 @@
 require 'code_breaker/parsable'
 require 'parser/current'
-require 'active_support/inflector'
 
 module CodeBreaker
   class Parser
