@@ -6,7 +6,7 @@ describe CodeBreaker::Parser do
       context "for a root node representing an #{connector} connection" do
         it 'returns a Hash with key :or and the connected children' do
           input  = "1.to_s #{connector} 5.5"
-          output = { or: [[Fixnum, :to_s], Float] }
+          output = { or: [[fixnum_or_integer, :to_s], Float] }
           expect(input).to be_parsed_as output
         end
       end
@@ -16,7 +16,7 @@ describe CodeBreaker::Parser do
       context "for a root node representing an #{connector} connection" do
         it 'returns a Hash with key :and and the connected children' do
           input  = "1.to_s #{connector} 5.5"
-          output = { and: [[Fixnum, :to_s], Float] }
+          output = { and: [[fixnum_or_integer, :to_s], Float] }
           expect(input).to be_parsed_as output
         end
       end
@@ -26,7 +26,7 @@ describe CodeBreaker::Parser do
       context 'with only an if clause' do
         it 'returns a Hash with key :if and the if clause body' do
           input  = "'2'.to_i if 2 == '2'"
-          output = { if: [Fixnum, :==, String], then: [String, :to_i] }
+          output = { if: [fixnum_or_integer, :==, String], then: [String, :to_i] }
           expect(input).to be_parsed_as output
         end
       end
@@ -34,7 +34,7 @@ describe CodeBreaker::Parser do
       context 'with an if/then clause' do
         it 'returns a Hash with key :if and the if clause body' do
           input  = "if 2 == '2' then '2'.to_i end"
-          output = { if: [Fixnum, :==, String], then: [String, :to_i] }
+          output = { if: [fixnum_or_integer, :==, String], then: [String, :to_i] }
           expect(input).to be_parsed_as output
         end
       end
@@ -43,7 +43,7 @@ describe CodeBreaker::Parser do
         it 'returns a Hash with key :if and the if clause body' do
           input  = "if 2 == '2' then '2'.to_i else Rational(2, 3).to_s end"
           output = {
-            if: [Fixnum, :==, String],
+            if: [fixnum_or_integer, :==, String],
             then: [String, :to_i],
             else: [Rational, :to_s]
           }
@@ -56,7 +56,7 @@ describe CodeBreaker::Parser do
         it 'returns a Hash with key :if and the if clause body' do
           input  = "if 2 == '2' then '2'.to_i elsif true then Object.new end"
           output = {
-            if: [Fixnum, :==, String],
+            if: [fixnum_or_integer, :==, String],
             then: [String, :to_i],
             else: {
               if: TrueClass,
@@ -124,7 +124,7 @@ describe CodeBreaker::Parser do
             module: [
               { const: :Breakable },
               [
-                { casgn: [:CONST, Fixnum] },
+                { casgn: [:CONST, fixnum_or_integer] },
                 { casgn: [:OTHER_CONST, [String, :freeze]] }
               ]
             ]
@@ -138,13 +138,13 @@ describe CodeBreaker::Parser do
     context 'for a root node representing a return' do
       it 'returns a Hash with key :return and the returned value' do
         input  = 'return 3'
-        output = { return: Fixnum }
+        output = { return: fixnum_or_integer }
         expect(input).to be_parsed_as output
       end
 
       it 'returns a Hash with key :return and the returned values as Array' do
         input  = 'return 3 + 2'
-        output = { return: [Fixnum, :+, Fixnum] }
+        output = { return: [fixnum_or_integer, :+, fixnum_or_integer] }
         expect(input).to be_parsed_as output
       end
     end
@@ -152,7 +152,7 @@ describe CodeBreaker::Parser do
     context 'for a root node representing a yield' do
       it 'returns a Hash with key :yield and the types of given arguments' do
         input  = "yield(3, 'beer')"
-        output = { yield: [Fixnum, String] }
+        output = { yield: [fixnum_or_integer, String] }
         expect(input).to be_parsed_as output
       end
 
@@ -184,7 +184,7 @@ describe CodeBreaker::Parser do
         input  = "for i in 1..5 do\nputs i\nend"
         output = {
           for: { lvasgn: [:i] },
-          in: { irange: [Fixnum, Fixnum] },
+          in: { irange: [fixnum_or_integer, fixnum_or_integer] },
           do: [:puts, { lvar: :i }]
         }
 
@@ -247,9 +247,9 @@ describe CodeBreaker::Parser do
             {
               case: [
                 { lvar: :state },
-                { when: Symbol, then: [Fixnum, :to_s] },
-                { when: Symbol, then: [Fixnum, :to_s] },
-                { else: Fixnum }
+                { when: Symbol, then: [fixnum_or_integer, :to_s] },
+                { when: Symbol, then: [fixnum_or_integer, :to_s] },
+                { else: fixnum_or_integer }
               ]
             }
           ]
@@ -266,8 +266,8 @@ describe CodeBreaker::Parser do
             {
               case: [
                 { lvar: :state },
-                { when: Symbol, then: [Fixnum, :to_s] },
-                { when: Symbol, then: [Fixnum, :to_s] }
+                { when: Symbol, then: [fixnum_or_integer, :to_s] },
+                { when: Symbol, then: [fixnum_or_integer, :to_s] }
               ]
             }
           ]
