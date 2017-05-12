@@ -13,7 +13,7 @@ sum = Rational(2, 3) + 4
 ```
 
 By breaking down this line into the receiver classes and called methods you can
-check e.g. whether a code snippet assigns the sum of a Rational and a Fixnum to
+check e.g. whether a code snippet assigns the sum of a Rational and an Integer to
 a variable with the name `sum`.
 
 Testing global code snippets might be important for testing the code of simple
@@ -44,7 +44,11 @@ require 'code_breaker'
 
 code_snippet = 'crazy_number = Rational(3, 5) + 42 - Complex(2.3, 6.4) * 1.2'
 CodeBreaker.parse(code_snippet)
+# for Ruby < v2.4.0:
 # => {:lvasgn=>[:crazy_number, [Rational, :+, Fixnum, :-, Complex, :*, Float]]}
+#
+# for Ruby >= v2.4.0:
+# => {:lvasgn=>[:crazy_number, [Rational, :+, Integer, :-, Complex, :*, Float]]}
 
 code_snippet = '"hello" + "World"'
 CodeBreaker.parse(code_snippet)
@@ -84,4 +88,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/daigak
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-

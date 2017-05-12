@@ -10,12 +10,18 @@ describe CodeBreaker::Parser do
         '"string"'  => String,
         ':symbol'   => Symbol,
         '3.5'       => Float,
-        '1'         => Fixnum,
-        '/^R+uby$/' => Regexp,
-        '4_611_686_018_427_387_904' => Bignum
+        '/^R+uby$/' => Regexp
       }.each do |input, output|
         it "returns #{output} for #{input}" do
           expect(input).to be_parsed_as output
+        end
+
+        it 'returns Fixnum or Integer for 1' do
+          expect(1).to be_parsed_as fixnum_or_integer
+        end
+
+        it 'returns Bignum or Integer for 4_611_686_018_427_387_904' do
+          expect(4_611_686_018_427_387_904).to be_parsed_as bignum_or_integer
         end
       end
     end
@@ -23,7 +29,7 @@ describe CodeBreaker::Parser do
     context 'for a root node representing an Array' do
       it 'returns a Hash with key :array and an Array of items' do
         input  = "[1, 'apple', :a, Day]"
-        output = { array: [Fixnum, String, Symbol, { const: :Day }] }
+        output = { array: [fixnum_or_integer, String, Symbol, { const: :Day }] }
         expect(input).to be_parsed_as output
       end
     end
@@ -53,7 +59,7 @@ describe CodeBreaker::Parser do
     context 'for a root node representing an interpolated string' do
       it 'returns a Hash with key :dstr and an Array of interpolation values' do
         input  = '"#{1 + 2} interpolated string #{\'here\'}"'
-        output = { dstr: [[Fixnum, :+, Fixnum], String, [String]] }
+        output = { dstr: [[fixnum_or_integer, :+, fixnum_or_integer], String, [String]] }
         expect(input).to be_parsed_as output
       end
     end

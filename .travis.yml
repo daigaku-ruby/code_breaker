@@ -1,4 +1,10 @@
 language: ruby
 rvm:
   - 2.2.0
-before_install: gem install bundler -v 1.10.6
+  - 2.2.7
+  - 2.3.0
+  - 2.3.4
+  - 2.4.0
+  - 2.4.1
+  - ruby-head
+before_install: gem install bundler -v 1.14.6
