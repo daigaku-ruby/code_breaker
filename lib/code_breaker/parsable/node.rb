@@ -2,19 +2,21 @@ module CodeBreaker
   module Parsable
     module Node
       def parse(node)
-        return if node.nil?
-
         if node.is_a?(Symbol)
           node
+        elsif node.nil?
+          parse_nil_node(node)
         else
           send("parse_#{node.type}_node", node)
         end
       end
 
-      def parse_children(node)
-        node.children.each_with_object([]) do |child, nodes|
-          nodes << parse(child) unless child.nil?
-          nodes
+      def parse_children(node, compact: true)
+        children = node.children
+        children = children.compact if compact
+
+        children.each_with_object([]) do |child, nodes|
+          nodes << parse(child)
         end
       end
 
@@ -31,7 +33,8 @@ module CodeBreaker
       end
 
       def method_missing(method, *args, &block)
-        node_type = method.to_s.match(/^parse_(.+)_node$/).captures.first
+        matches = method.to_s.match(/^parse_(.+)_node$/)
+        node_type = matches ? matches.captures.first : []
 
         if node_type.empty?
           super

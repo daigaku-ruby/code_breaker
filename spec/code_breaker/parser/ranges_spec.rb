@@ -17,5 +17,37 @@ describe CodeBreaker::Parser do
         expect(input).to be_parsed_as output
       end
     end
+
+    context 'for a beginless inclusive range' do
+      it 'returns a Hash with key :irange and the upper bounding type' do
+      input = '..1.2'
+      output = { irange: [NilClass, Float]}
+      expect(input).to be_parsed_as output
+      end
+    end
+
+    context 'for a beginless exclusive range' do
+      it 'returns a Hash with key :erange and the upper bounding type' do
+      input = '...1.2'
+      output = { erange: [NilClass, Float]}
+      expect(input).to be_parsed_as output
+      end
+    end
+
+    context 'for a endless inclusive range' do
+      it 'returns a Hash with key :irange and the lower bounding type' do
+      input = '1.2..'
+      output = { irange: [Float, NilClass]}
+      expect(input).to be_parsed_as output
+      end
+    end
+
+    context 'for a endless exclusive range' do
+      it 'returns a Hash with key :erange and the lower bounding type' do
+      input = '1.2...'
+      output = { erange: [Float, NilClass]}
+      expect(input).to be_parsed_as output
+      end
+    end
   end
 end

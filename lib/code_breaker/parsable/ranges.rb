@@ -3,11 +3,15 @@ module CodeBreaker
     module Ranges
       include Parsable::Node
 
-      # inclusive range a..b
-      alias_method :parse_irange_node, :parse_as_hash
+      # inclusive range a..b, a.., ..b
+      def parse_irange_node(node)
+        { node.type => parse_children(node, compact: false) }
+      end
 
-      # exclusive range a...b
-      alias_method :parse_erange_node, :parse_as_hash
+      # exclusive range a...b, a..., ...b
+      def parse_erange_node(node)
+        { node.type => parse_children(node, compact: false) }
+      end
     end
   end
 end

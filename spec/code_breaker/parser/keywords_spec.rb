@@ -267,7 +267,8 @@ describe CodeBreaker::Parser do
               case: [
                 { lvar: :state },
                 { when: Symbol, then: [fixnum_or_integer, :to_s] },
-                { when: Symbol, then: [fixnum_or_integer, :to_s] }
+                { when: Symbol, then: [fixnum_or_integer, :to_s] },
+                { else: NilClass }
               ]
             }
           ]
