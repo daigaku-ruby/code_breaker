@@ -2,9 +2,9 @@ name: Ruby CI
 
 on:
   push:
-    branches: [ master, development ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ master, development ]
+    branches: [ master, develop ]
 
 jobs:
   test:
@@ -22,9 +22,9 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: vendor/bundle
-        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        key: ${{ matrix.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
         restore-keys: |
-          ${{ runner.os }}-gems-
+          ${{ matrix.os }}-gems-
     - name: Install dependencies
       run: |
         gem install bundler
