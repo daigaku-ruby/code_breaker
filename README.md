@@ -1,6 +1,6 @@
 # CodeBreaker
 
-[![Build Status](https://travis-ci.org/daigaku-ruby/code_breaker.svg?branch=master)](https://travis-ci.org/daigaku-ruby/code_breaker)
+[![Build Status](https://travis-ci.org/daigaku-ruby/code_breaker.svg?branch=main)](https://travis-ci.org/daigaku-ruby/code_breaker)
 [![Gem Version](https://badge.fury.io/rb/code_breaker.svg)](http://badge.fury.io/rb/code_breaker)
 
 CodeBreaker breaks a line of Ruby code into its receiver classes and the methods
