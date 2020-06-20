@@ -7,7 +7,7 @@ describe CodeBreaker::Parser do
         input  = '5.times { |n| n.to_s }'
         output = {
           block: [
-            [fixnum_or_integer, :times],
+            [Integer, :times],
             { args: [{ arg: :n }] },
             [{ lvar: :n }, :to_s]
           ]
@@ -22,7 +22,7 @@ describe CodeBreaker::Parser do
         input  = '[1, 2].reduce(0) { |sum, n| sum += n }'
         output = {
           block: [
-            [{ array: [fixnum_or_integer, fixnum_or_integer] }, :reduce, fixnum_or_integer],
+            [{ array: [Integer, Integer] }, :reduce, Integer],
             { args: [{ arg: :sum }, { arg: :n }] },
             { op_asgn: [{ lvasgn: [:sum] }, :+, { lvar: :n }] }
           ]
@@ -35,7 +35,7 @@ describe CodeBreaker::Parser do
     context 'for a root node representing a block pass' do
       it 'returns an array with a Hash with the :block_pass key' do
         input  = '[1, 2].map &:to_s'
-        output = [{ array: [fixnum_or_integer, fixnum_or_integer] }, :map, { block_pass: :to_s }]
+        output = [{ array: [Integer, Integer] }, :map, { block_pass: :to_s }]
         expect(input).to be_parsed_as output
       end
     end
@@ -79,7 +79,7 @@ describe CodeBreaker::Parser do
             {
               args: [
                 { arg: :name },
-                { optarg: [:options, { hash: [{ Symbol => fixnum_or_integer }] }] }
+                { optarg: [:options, { hash: [{ Symbol => Integer }] }] }
               ]
             },
             String
@@ -134,7 +134,7 @@ describe CodeBreaker::Parser do
       context 'for a root node representing a splat operator' do
         it 'returns a Hash with key :splat and the splat values' do
           input  = 'puts(*[1,2])'
-          output = [:puts, { splat: { array: [fixnum_or_integer, fixnum_or_integer] } }]
+          output = [:puts, { splat: { array: [Integer, Integer] } }]
           expect(input).to be_parsed_as output
         end
       end

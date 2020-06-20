@@ -13,7 +13,7 @@ describe CodeBreaker::Parser do
     context 'for a root node representing an exclusive range' do
       it 'returns a Hash with key :erange and the bounding types' do
         input  = '1.2...4'
-        output = { erange: [Float, fixnum_or_integer] }
+        output = { erange: [Float, Integer] }
         expect(input).to be_parsed_as output
       end
     end

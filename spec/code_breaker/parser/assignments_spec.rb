@@ -5,7 +5,7 @@ describe CodeBreaker::Parser do
     context 'for a local variable assignment' do
       it 'returns a Hash with key :lvasgn' do
         input  = "name = 'John Doe' + 24.to_s"
-        output = { lvasgn: [:name, [String, :+, fixnum_or_integer, :to_s]] }
+        output = { lvasgn: [:name, [String, :+, Integer, :to_s]] }
         expect(input).to be_parsed_as output
       end
     end
@@ -13,7 +13,7 @@ describe CodeBreaker::Parser do
     context 'for an instance variable assignment' do
       it 'returns a Hash with key :ivasgn' do
         input  = "@name = 'John Doe' + 24.to_s"
-        output = { ivasgn: [:@name, [String, :+, fixnum_or_integer, :to_s]] }
+        output = { ivasgn: [:@name, [String, :+, Integer, :to_s]] }
         expect(input).to be_parsed_as output
       end
     end
@@ -21,7 +21,7 @@ describe CodeBreaker::Parser do
     context 'for a class variable assignment' do
       it 'returns a Hash with key :cvasgn' do
         input  = "@@name = 'John Doe' + 24.to_s"
-        output = { cvasgn: [:@@name, [String, :+, fixnum_or_integer, :to_s]] }
+        output = { cvasgn: [:@@name, [String, :+, Integer, :to_s]] }
         expect(input).to be_parsed_as output
       end
     end
@@ -29,7 +29,7 @@ describe CodeBreaker::Parser do
     context 'for a global variable assignment' do
       it 'returns a Hash with key :cvasgn' do
         input  = "$name = 'John Doe' + 24.to_s"
-        output = { gvasgn: [:'$name', [String, :+, fixnum_or_integer, :to_s]] }
+        output = { gvasgn: [:'$name', [String, :+, Integer, :to_s]] }
         expect(input).to be_parsed_as output
       end
     end
@@ -45,13 +45,13 @@ describe CodeBreaker::Parser do
     context 'for a multiple variable assignment' do
       it 'returns an assignment hash if RHS is an Array' do
         input  = "x, y = ['holy', 108]"
-        output = { masgn: { [:x, :y] => [String, fixnum_or_integer] } }
+        output = { masgn: { [:x, :y] => [String, Integer] } }
         expect(input).to be_parsed_as output
       end
 
       it 'returns an assignment hash if RHS is a variable list' do
         input  = "x, y = 'holy', 108"
-        output = { masgn: { [:x, :y] => [String, fixnum_or_integer] } }
+        output = { masgn: { [:x, :y] => [String, Integer] } }
         expect(input).to be_parsed_as output
       end
 
@@ -65,7 +65,7 @@ describe CodeBreaker::Parser do
     context 'for an operation assignment' do
       it 'returns a Hash with key :op_asgn' do
         input  = 'a += 1'
-        output = { op_asgn: [{ lvasgn: [:a] }, :+, fixnum_or_integer] }
+        output = { op_asgn: [{ lvasgn: [:a] }, :+, Integer] }
         expect(input).to be_parsed_as output
       end
     end
