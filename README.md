@@ -1,6 +1,6 @@
 # CodeBreaker
 
-[![Build Status](https://travis-ci.org/daigaku-ruby/code_breaker.svg?branch=main)](https://travis-ci.org/daigaku-ruby/code_breaker)
+[![Build Status](https://github.com/daigaku-ruby/code_breaker/workflows/main/badge.svg)](https://github.com/daigaku-ruby/code_breaker/workflows/main/badge.svg)
 [![Gem Version](https://badge.fury.io/rb/code_breaker.svg)](http://badge.fury.io/rb/code_breaker)
 
 CodeBreaker breaks a line of Ruby code into its receiver classes and the methods
@@ -44,10 +44,6 @@ require 'code_breaker'
 
 code_snippet = 'crazy_number = Rational(3, 5) + 42 - Complex(2.3, 6.4) * 1.2'
 CodeBreaker.parse(code_snippet)
-# for Ruby < v2.4.0:
-# => {:lvasgn=>[:crazy_number, [Rational, :+, Fixnum, :-, Complex, :*, Float]]}
-#
-# for Ruby >= v2.4.0:
 # => {:lvasgn=>[:crazy_number, [Rational, :+, Integer, :-, Complex, :*, Float]]}
 
 code_snippet = '"hello" + "World"'
